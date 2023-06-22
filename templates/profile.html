@@ -1,0 +1,561 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/scholi.png">
+  <title>Scholly</title>
+  <style>
+    .scnd{
+        /* background-image: linear-gradient(to right,red,red,red,red,blue,blue); */
+        background-image: url("./static/background.jpg");
+        background-repeat: repeat; 
+        background-position: center; 
+        background-size: cover; 
+        background-attachment: fixed;
+    }
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      word-wrap: break-word;
+      background-color: #fff;
+      background-clip: border-box;
+      border: 0 solid transparent;
+      border-radius: .25rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
+    }
+    .me-2 {
+      margin-right: .5rem!important;
+    }
+
+    .profile-pic {
+      color: transparent;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .profile-pic input {
+      display: none;
+    }
+    .profile-pic img {
+      position: absolute;
+      object-fit: cover;
+      width: 165px;
+      height: 165px;
+      box-shadow: 0 0 10px 0 rgba(255, 255, 255, .35);
+      border-radius: 100px;
+      z-index: 0;
+    }
+    .profile-pic .-label {
+      cursor: pointer;
+      height: 165px;
+      width: 165px;
+    }
+    .profile-pic:hover .-label {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, .8);
+      z-index: 10000;
+      color: #fafafa;
+      transition: background-color 0.2s ease-in-out;
+      border-radius: 100px;
+      margin-bottom: 0;
+    }
+    .profile-pic span {
+      display: inline-flex;
+      padding: 0.2em;
+      height: 2em;
+    }
+    
+  </style>
+</head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <body>
+<nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="/home2">
+      <img src="/static/scholi.png" width="70" height="60" class="d-inline-block align-top" alt="" style="margin-left: 10px;">     
+    </a>
+    <div class="d-flex flex-row-reverse">
+      <div class="p-2"><button type="button" class="btn btn-outline-primary" onclick="location.href='/logout'">Logout</button></div>
+      <div class="p-2"><button type="button" class="btn btn-outline-primary" onclick="location.href='/search_forme'">Search</button></div>
+      <div class="p-2"><button type="button" class="btn btn-outline-primary" onclick="location.href='/home2'">Home</button></div>
+    </div>
+</nav>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <body class="scnd text-dark">
+  {% for data in values %}
+  <br>
+  <br>
+    <div class="container">
+    <form action="/update" enctype="multipart/form-data" method="POST">
+      <div class="main-body">
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+              <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                  <div class="profile-pic">
+                    <label class="-label" for="file">
+                      <span class="glyphicon glyphicon-camera"></span>
+                      <span>Change Image</span>
+                    </label>
+                    <input type="file" name="pic" id="file" onchange="loadFile(event)"/>
+                  
+                    {% if data.photo %}
+                      <img src="{{ url_for('display_image', image_id=data.id) }}">                      
+                    {% else %}
+                    <img src="/static/profile.jpg">
+                    {% endif %}   
+                    
+                  </div>
+                  <br>
+                  <button type="button" class="btn btn-outline-danger" onclick="location.href='/removephoto'">Remove Photo</button>
+                  <div class="mt-3">
+                    <h4>{{data.name}}</h4>
+                    <h4>{{data.email}}</h4>
+                  </div>
+                </div>
+                <hr class="my-4">
+              </div>
+              <!-- <div class="alert alert-success" role="alert"> -->
+                <p class="alert alert-success" style="text-align: center;">Click save to update image</p>
+              <!-- </div> -->
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+              <div class="card-body">
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">Full Name</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <input type="name" name="name" id="name" class="form-control" value="{{data.name}}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">Email</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <input type="email" name="email" id="email" class="form-control" value="{{data.email}}" disabled>
+                  </div>
+                </div>
+               <!-- <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">Phone</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <input type="text" class="form-control" value="+91 **********">
+                  </div>
+                </div>-->
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">DOB</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <input name="dob" id="dob" type="date" class="form-control" value="{{data.dob}}">
+                    <!--<input type="text" class="form-control" value="{{data.dob}}">-->
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">Gender</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <select class="form-control" id="gender" name="gender" type="gender">
+                      <option name="" value="{{data.gender}}">{{data.gender}}</option>
+                      <option value="">Delete</option>
+                      <option name="male" value="male">Male</option>
+                      <option name="female" value="female">Female</option>
+                    </select>                  
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">State</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <select class="form-control" name="inputState" type="inputState" id="inputState" value="{{data.inputstate}}">
+                      <option value="{{data.inputstate}}">{{data.inputstate}}</option>
+                      <option value="">Delete</option>
+                      <option value="Andra Pradesh">Andra Pradesh</option>
+                      <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                      <option value="Assam">Assam</option>
+                      <option value="Bihar">Bihar</option>
+                      <option value="Chhattisgarh">Chhattisgarh</option>
+                      <option value="Goa">Goa</option>
+                      <option value="Gujarat">Gujarat</option>
+                      <option value="Haryana">Haryana</option>
+                      <option value="Himachal Pradesh">Himachal Pradesh</option>
+                      <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                      <option value="Jharkhand">Jharkhand</option>
+                      <option value="Karnataka">Karnataka</option>
+                      <option value="Kerala">Kerala</option>
+                      <option value="Madya Pradesh">Madya Pradesh</option>
+                      <option value="Maharashtra">Maharashtra</option>
+                      <option value="Manipur">Manipur</option>
+                      <option value="Meghalaya">Meghalaya</option>
+                      <option value="Mizoram">Mizoram</option>
+                      <option value="Nagaland">Nagaland</option>
+                      <option value="Orissa">Orissa</option>
+                      <option value="Punjab">Punjab</option>
+                      <option value="Rajasthan">Rajasthan</option>
+                      <option value="Sikkim">Sikkim</option>
+                      <option value="Tamil Nadu">Tamil Nadu</option>
+                      <option value="Telangana">Telangana</option>
+                      <option value="Tripura">Tripura</option>
+                      <option value="Uttaranchal">Uttaranchal</option>
+                      <option value="Uttar Pradesh">Uttar Pradesh</option>
+                      <option value="West Bengal">West Bengal</option>
+                      <option disabled style="background-color:#aaa; color:#fff">UNION Territories</option>
+                      <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                      <option value="Chandigarh">Chandigarh</option>
+                      <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
+                      <option value="Daman and Diu">Daman and Diu</option>
+                      <option value="Delhi">Delhi</option>
+                      <option value="Lakshadeep">Lakshadeep</option>
+                      <option value="Pondicherry">Pondicherry</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">District</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <select class="form-control" name="inputDistrict" type="inputDistrict" id="inputDistrict" value="{{data.inputdistrict}}">
+                      <option value="{{data.inputdistrict}}">{{data.inputdistrict}}</option>
+                      <option value="">Delete</option>
+                  </select>                 
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">Category</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <select class="form-control" id="inputcategory" name="inputcategory" type="inputcategory" value="{{data.inputcategory}}">
+                      <option value="{{data.inputcategory}}">{{data.inputcategory}}</option>
+                      <option value="">Delete</option>
+                      <option value="OC">OC</option>
+                      <option value="OBC">OBC</option>
+                      <option value="MBC">MBC</option>
+                      <option value="SC">SC</option>
+                      <option value="SCA">SCA</option>
+                      <option value="SC/ST">SC/ST</option>
+                      <option value="IOMC-LSDM">IOMC-LSDM</option>
+                      <option value="Disabilities">Disabilities</option>
+                      <option value="BC_General">BC General</option>
+                      <option value="BC_Muslim">BC Muslim</option>
+                    </select>                 
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">Current Study</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <select name="currentstudy" id="currentstudy" class="currentstudy form-control">
+                      <option value="{{data.currentstudy}}">{{data.currentstudy}}</option>
+                      <option value="">Delete</option>
+                      <option value="1st">1st</option>
+                      <option value="2nd">2nd</option>
+                      <option value="3rd">3rd</option>
+                      <option value="4th">4th</option>
+                      <option value="5th">5th</option>
+                      <option value="6th">6th</option>
+                      <option value="7th">7th</option>
+                      <option value="8th">8th</option>
+                      <option value="9th">9th</option>
+                      <option value="10th">10th</option>
+                      <option value="11th">11th</option>
+                      <option value="12th">12th</option>
+                      <option value="UG">UG</option>
+                      <option value="PG">PG</option>
+                      <option value="BE">BE</option>
+                      <option value="BTech">BTech</option>
+                      <option value="ME">ME</option>
+                      <option value="MBBS">MBBS</option>
+                      <option value="Engineering">Engineering</option>
+                      <option value="Banking">Banking</option>
+                      <option value="Architecture">Architecture</option>
+                      <option value="young professionals">young professionals</option>
+                      <option value="research level">research level</option>
+                      <option value="PhD">PhD</option>
+                      <option value="MSc">MSc</option>
+                      <option value="MLitt">MLitt</option>
+                      <!-- <option value="MBBS 1st year">MBBS 1st year</option>
+                      <option value="MBBS 2nd year">MBBS 2nd year</option>
+                      <option value="MBBS 3rd year">MBBS 3rd year</option>
+                      <option value="MBBS 4th year">MBBS 4th year</option>
+                      <option value="MBBS 5th year">MBBS 5th year</option> -->
+                      <!-- <option value="MBBS complete">MBBS complete</option> -->
+                      <!-- <option value="ENG 1st year">ENG 1st year</option>
+                      <option value="ENG 2nd year">ENG 2nd year</option>
+                      <option value="ENG 3rd year">ENG 3rd year</option>
+                      <option value="ENG 4th year">ENG 4th year</option>
+                      <option value="ENG 5th year">ENG 5th year</option>
+                      <option value="END complete">ENG complete</option> -->
+                      <option value="1 Academic Year">1 Academic Year</option>
+                      <option value="b.Sc Nursing">b.Sc Nursing</option>
+                      <option value="MBA">MBA</option>
+                      <option value="Agriculture(B.Sc)">Agriculture(B.Sc)</option>
+                      <option value="Architecture at research">Architecture at research</option>
+                      <option value="Architecture at graduates">Architecture at graduates</option>
+                      <option value="Architecture at PG">Architecture at PG</option>
+                      <option value="Defensive service">Defensive service</option>
+                      <option value="Internal Security Families">Internal Security Families</option>
+                      <option value="Diploma">Diploma</option>
+                  </select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">Batch of Study</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <input type="passedout" name="passedout" id="passedout" class="passedout form-control" value="{{data.passedout}}"/>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <h6 class="mb-0">Income</h6>
+                  </div>
+                  <div class="col-sm-9 text-secondary">
+                    <input type="income" name="income" id="income" class="income form-control" value="{{data.income}}"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-3"></div>
+                  <div class="col-sm-9 text-secondary">
+                    <button type="submit" class="btn btn-outline-primary btn-lg" onclick="location.href='/update'">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    </div>
+  {% endfor %}
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script>
+      var AndraPradesh = ["Anantapur","Chittoor","East Godavari","Guntur","Kadapa","Krishna","Kurnool","Prakasam","Nellore","Srikakulam","Visakhapatnam","Vizianagaram","West Godavari"];
+var ArunachalPradesh = ["Anjaw","Changlang","Dibang Valley","East Kameng","East Siang","Kra Daadi","Kurung Kumey","Lohit","Longding","Lower Dibang Valley","Lower Subansiri","Namsai","Papum Pare","Siang","Tawang","Tirap","Upper Siang","Upper Subansiri","West Kameng","West Siang","Itanagar"];
+var Assam = ["Baksa","Barpeta","Biswanath","Bongaigaon","Cachar","Charaideo","Chirang","Darrang","Dhemaji","Dhubri","Dibrugarh","Goalpara","Golaghat","Hailakandi","Hojai","Jorhat","Kamrup Metropolitan","Kamrup (Rural)","Karbi Anglong","Karimganj","Kokrajhar","Lakhimpur","Majuli","Morigaon","Nagaon","Nalbari","Dima Hasao","Sivasagar","Sonitpur","South Salmara Mankachar","Tinsukia","Udalguri","West Karbi Anglong"];
+var Bihar = ["Araria","Arwal","Aurangabad","Banka","Begusarai","Bhagalpur","Bhojpur","Buxar","Darbhanga","East Champaran","Gaya","Gopalganj","Jamui","Jehanabad","Kaimur","Katihar","Khagaria","Kishanganj","Lakhisarai","Madhepura","Madhubani","Munger","Muzaffarpur","Nalanda","Nawada","Patna","Purnia","Rohtas","Saharsa","Samastipur","Saran","Sheikhpura","Sheohar","Sitamarhi","Siwan","Supaul","Vaishali","West Champaran"];
+var Chhattisgarh = ["Balod","Baloda Bazar","Balrampur","Bastar","Bemetara","Bijapur","Bilaspur","Dantewada","Dhamtari","Durg","Gariaband","Janjgir Champa","Jashpur","Kabirdham","Kanker","Kondagaon","Korba","Koriya","Mahasamund","Mungeli","Narayanpur","Raigarh","Raipur","Rajnandgaon","Sukma","Surajpur","Surguja"];
+var Goa = ["North Goa","South Goa"];
+var Gujarat = ["Ahmedabad","Amreli","Anand","Aravalli","Banaskantha","Bharuch","Bhavnagar","Botad","Chhota Udaipur","Dahod","Dang","Devbhoomi Dwarka","Gandhinagar","Gir Somnath","Jamnagar","Junagadh","Kheda","Kutch","Mahisagar","Mehsana","Morbi","Narmada","Navsari","Panchmahal","Patan","Porbandar","Rajkot","Sabarkantha","Surat","Surendranagar","Tapi","Vadodara","Valsad"];
+var Haryana = ["Ambala","Bhiwani","Charkhi Dadri","Faridabad","Fatehabad","Gurugram","Hisar","Jhajjar","Jind","Kaithal","Karnal","Kurukshetra","Mahendragarh","Mewat","Palwal","Panchkula","Panipat","Rewari","Rohtak","Sirsa","Sonipat","Yamunanagar"];
+var HimachalPradesh = ["Bilaspur","Chamba","Hamirpur","Kangra","Kinnaur","Kullu","Lahaul Spiti","Mandi","Shimla","Sirmaur","Solan","Una"];
+var JammuKashmir = ["Anantnag","Bandipora","Baramulla","Budgam","Doda","Ganderbal","Jammu","Kargil","Kathua","Kishtwar","Kulgam","Kupwara","Leh","Poonch","Pulwama","Rajouri","Ramban","Reasi","Samba","Shopian","Srinagar","Udhampur"];
+var Jharkhand = ["Bokaro","Chatra","Deoghar","Dhanbad","Dumka","East Singhbhum","Garhwa","Giridih","Godda","Gumla","Hazaribagh","Jamtara","Khunti","Koderma","Latehar","Lohardaga","Pakur","Palamu","Ramgarh","Ranchi","Sahebganj","Seraikela Kharsawan","Simdega","West Singhbhum"];
+var Karnataka = ["Bagalkot","Bangalore Rural","Bangalore Urban","Belgaum","Bellary","Bidar","Vijayapura","Chamarajanagar","Chikkaballapur","Chikkamagaluru","Chitradurga","Dakshina Kannada","Davanagere","Dharwad","Gadag","Gulbarga","Hassan","Haveri","Kodagu","Kolar","Koppal","Mandya","Mysore","Raichur","Ramanagara","Shimoga","Tumkur","Udupi","Uttara Kannada","Yadgir"];
+var Kerala = ["Alappuzha","Ernakulam","Idukki","Kannur","Kasaragod","Kollam","Kottayam","Kozhikode","Malappuram","Palakkad","Pathanamthitta","Thiruvananthapuram","Thrissur","Wayanad"];
+var MadhyaPradesh = ["Agar Malwa","Alirajpur","Anuppur","Ashoknagar","Balaghat","Barwani","Betul","Bhind","Bhopal","Burhanpur","Chhatarpur","Chhindwara","Damoh","Datia","Dewas","Dhar","Dindori","Guna","Gwalior","Harda","Hoshangabad","Indore","Jabalpur","Jhabua","Katni","Khandwa","Khargone","Mandla","Mandsaur","Morena","Narsinghpur","Neemuch","Panna","Raisen","Rajgarh","Ratlam","Rewa","Sagar","Satna",
+"Sehore","Seoni","Shahdol","Shajapur","Sheopur","Shivpuri","Sidhi","Singrauli","Tikamgarh","Ujjain","Umaria","Vidisha"];
+var Maharashtra = ["Ahmednagar","Akola","Amravati","Aurangabad","Beed","Bhandara","Buldhana","Chandrapur","Dhule","Gadchiroli","Gondia","Hingoli","Jalgaon","Jalna","Kolhapur","Latur","Mumbai City","Mumbai Suburban","Nagpur","Nanded","Nandurbar","Nashik","Osmanabad","Palghar","Parbhani","Pune","Raigad","Ratnagiri","Sangli","Satara","Sindhudurg","Solapur","Thane","Wardha","Washim","Yavatmal"];
+var Manipur = ["Bishnupur","Chandel","Churachandpur","Imphal East","Imphal West","Jiribam","Kakching","Kamjong","Kangpokpi","Noney","Pherzawl","Senapati","Tamenglong","Tengnoupal","Thoubal","Ukhrul"];
+var Meghalaya = ["East Garo Hills","East Jaintia Hills","East Khasi Hills","North Garo Hills","Ri Bhoi","South Garo Hills","South West Garo Hills","South West Khasi Hills","West Garo Hills","West Jaintia Hills","West Khasi Hills"];
+var Mizoram = ["Aizawl","Champhai","Kolasib","Lawngtlai","Lunglei","Mamit","Saiha","Serchhip","Aizawl","Champhai","Kolasib","Lawngtlai","Lunglei","Mamit","Saiha","Serchhip"];
+var Nagaland = ["Dimapur","Kiphire","Kohima","Longleng","Mokokchung","Mon","Peren","Phek","Tuensang","Wokha","Zunheboto"];
+var Odisha = ["Angul","Balangir","Balasore","Bargarh","Bhadrak","Boudh","Cuttack","Debagarh","Dhenkanal","Gajapati","Ganjam","Jagatsinghpur","Jajpur","Jharsuguda","Kalahandi","Kandhamal","Kendrapara","Kendujhar","Khordha","Koraput","Malkangiri","Mayurbhanj","Nabarangpur","Nayagarh","Nuapada","Puri","Rayagada","Sambalpur","Subarnapur","Sundergarh"];
+var Punjab = ["Amritsar","Barnala","Bathinda","Faridkot","Fatehgarh Sahib","Fazilka","Firozpur","Gurdaspur","Hoshiarpur","Jalandhar","Kapurthala","Ludhiana","Mansa","Moga","Mohali","Muktsar","Pathankot","Patiala","Rupnagar","Sangrur","Shaheed Bhagat Singh Nagar","Tarn Taran"];
+var Rajasthan = ["Ajmer","Alwar","Banswara","Baran","Barmer","Bharatpur","Bhilwara","Bikaner","Bundi","Chittorgarh","Churu","Dausa","Dholpur","Dungarpur","Ganganagar","Hanumangarh","Jaipur","Jaisalmer","Jalore","Jhalawar","Jhunjhunu","Jodhpur","Karauli","Kota","Nagaur","Pali","Pratapgarh","Rajsamand","Sawai Madhopur","Sikar","Sirohi","Tonk","Udaipur"];
+var Sikkim = ["East Sikkim","North Sikkim","South Sikkim","West Sikkim"];
+var TamilNadu = ["Ariyalur","Chennai","Coimbatore","Cuddalore","Dharmapuri","Dindigul","Erode","Kanchipuram","Kanyakumari","Karur","Krishnagiri","Madurai","Nagapattinam","Namakkal","Nilgiris","Perambalur","Pudukkottai","Ramanathapuram","Salem","Sivaganga","Thanjavur","Theni","Thoothukudi","Tiruchirappalli","Tirunelveli","Tiruppur","Tiruvallur","Tiruvannamalai","Tiruvarur","Vellore","Viluppuram","Virudhunagar"];
+var Telangana = ["Adilabad","Bhadradri Kothagudem","Hyderabad","Jagtial","Jangaon","Jayashankar","Jogulamba","Kamareddy","Karimnagar","Khammam","Komaram Bheem","Mahabubabad","Mahbubnagar","Mancherial","Medak","Medchal","Nagarkurnool","Nalgonda","Nirmal","Nizamabad","Peddapalli","Rajanna Sircilla","Ranga Reddy","Sangareddy","Siddipet","Suryapet","Vikarabad","Wanaparthy","Warangal Rural","Warangal Urban","Yadadri Bhuvanagiri"];
+var Tripura = ["Dhalai","Gomati","Khowai","North Tripura","Sepahijala","South Tripura","Unakoti","West Tripura"];
+var UttarPradesh = ["Agra","Aligarh","Allahabad","Ambedkar Nagar","Amethi","Amroha","Auraiya","Azamgarh","Baghpat","Bahraich","Ballia","Balrampur","Banda","Barabanki","Bareilly","Basti","Bhadohi","Bijnor","Budaun","Bulandshahr","Chandauli","Chitrakoot","Deoria","Etah","Etawah","Faizabad","Farrukhabad","Fatehpur","Firozabad","Gautam Buddha Nagar","Ghaziabad","Ghazipur","Gonda","Gorakhpur","Hamirpur","Hapur","Hardoi","Hathras","Jalaun","Jaunpur","Jhansi","Kannauj","Kanpur Dehat","Kanpur Nagar","Kasganj","Kaushambi","Kheri","Kushinagar","Lalitpur","Lucknow","Maharajganj","Mahoba","Mainpuri","Mathura","Mau","Meerut","Mirzapur","Moradabad","Muzaffarnagar","Pilibhit","Pratapgarh","Raebareli","Rampur","Saharanpur","Sambhal","Sant Kabir Nagar","Shahjahanpur","Shamli","Shravasti","Siddharthnagar","Sitapur","Sonbhadra","Sultanpur","Unnao","Varanasi"];
+var Uttarakhand  = ["Almora","Bageshwar","Chamoli","Champawat","Dehradun","Haridwar","Nainital","Pauri","Pithoragarh","Rudraprayag","Tehri","Udham Singh Nagar","Uttarkashi"];
+var WestBengal = ["Alipurduar","Bankura","Birbhum","Cooch Behar","Dakshin Dinajpur","Darjeeling","Hooghly","Howrah","Jalpaiguri","Jhargram","Kalimpong","Kolkata","Malda","Murshidabad","Nadia","North 24 Parganas","Paschim Bardhaman","Paschim Medinipur","Purba Bardhaman","Purba Medinipur","Purulia","South 24 Parganas","Uttar Dinajpur"];
+var AndamanNicobar = ["Nicobar","North Middle Andaman","South Andaman"];
+var Chandigarh = ["Chandigarh"];
+var DadraHaveli = ["Dadra Nagar Haveli"];
+var DamanDiu = ["Daman","Diu"];
+var Delhi = ["Central Delhi","East Delhi","New Delhi","North Delhi","North East Delhi","North West Delhi","Shahdara","South Delhi","South East Delhi","South West Delhi","West Delhi"];
+var Lakshadweep = ["Lakshadweep"];
+var Puducherry = ["Karaikal","Mahe","Puducherry","Yanam"];
+
+
+$("#inputState").change(function(){
+var StateSelected = $(this).val();
+var optionsList;
+var htmlString = "";
+
+switch (StateSelected) {
+case "Andra Pradesh":
+  optionsList = AndraPradesh;
+  break;
+case "Arunachal Pradesh":
+  optionsList = ArunachalPradesh;
+  break;
+case "Assam":
+  optionsList = Assam;
+  break;
+case "Bihar":
+  optionsList = Bihar;
+  break;
+case "Chhattisgarh":
+  optionsList = Chhattisgarh;
+  break;
+case "Goa":
+  optionsList = Goa;
+  break;
+case  "Gujarat":
+  optionsList = Gujarat;
+  break;
+case "Haryana":
+  optionsList = Haryana;
+  break;
+case "Himachal Pradesh":
+  optionsList = HimachalPradesh;
+  break;
+case "Jammu and Kashmir":
+  optionsList = JammuKashmir;
+  break;
+case "Jharkhand":
+  optionsList = Jharkhand;
+  break;
+case  "Karnataka":
+  optionsList = Karnataka;
+  break;
+case "Kerala":
+  optionsList = Kerala;
+  break;
+case  "Madya Pradesh":
+  optionsList = MadhyaPradesh;
+  break;
+case "Maharashtra":
+  optionsList = Maharashtra;
+  break;
+case  "Manipur":
+  optionsList = Manipur;
+  break;
+case "Meghalaya":
+  optionsList = Meghalaya ;
+  break;
+case  "Mizoram":
+  optionsList = Mizoram;
+  break;
+case "Nagaland":
+  optionsList = Nagaland;
+  break;
+case  "Orissa":
+  optionsList = Orissa;
+  break;
+case "Punjab":
+  optionsList = Punjab;
+  break;
+case  "Rajasthan":
+  optionsList = Rajasthan;
+  break;
+case "Sikkim":
+  optionsList = Sikkim;
+  break;
+case  "Tamil Nadu":
+  optionsList = TamilNadu;
+  break;
+case  "Telangana":
+  optionsList = Telangana;
+  break;
+case "Tripura":
+  optionsList = Tripura ;
+  break;
+case  "Uttaranchal":
+  optionsList = Uttaranchal;
+  break;
+case  "Uttar Pradesh":
+  optionsList = UttarPradesh;
+  break;
+case "West Bengal":
+  optionsList = WestBengal;
+  break;
+case  "Andaman and Nicobar Islands":
+  optionsList = AndamanNicobar;
+  break;
+case "Chandigarh":
+  optionsList = Chandigarh;
+  break;
+case  "Dadar and Nagar Haveli":
+  optionsList = DadraHaveli;
+  break;
+case "Daman and Diu":
+  optionsList = DamanDiu;
+  break;
+case  "Delhi":
+  optionsList = Delhi;
+  break;
+case "Lakshadeep":
+  optionsList = Lakshadeep ;
+  break;
+case  "Pondicherry":
+  optionsList = Pondicherry;
+  break;
+}
+
+
+for(var i = 0; i < optionsList.length; i++){
+htmlString = htmlString+"<option value='"+ optionsList[i] +"'>"+ optionsList[i] +"</option>";
+}
+$("#inputDistrict").html(htmlString);
+
+});
+
+function validate_password() {
+ 
+ var password = document.getElementById('password').value;
+ var confirm_password = document.getElementById('confirm_password').value;
+ if (password != confirm_password) {
+     document.getElementById('wrong_pass_alert').style.color = 'red';
+     document.getElementById('wrong_pass_alert').innerHTML
+       = '☒ Use same password';
+     document.getElementById('create').disabled = true;
+     document.getElementById('create').style.opacity = (0.4);
+ } else {
+     document.getElementById('wrong_pass_alert').style.color = 'green';
+     document.getElementById('wrong_pass_alert').innerHTML =
+         '🗹 Password Matched';
+     document.getElementById('create').disabled = false;
+     document.getElementById('create').style.opacity = (1);
+ }
+}
+
+function wrong_pass_alert() {
+ if (document.getElementById('password').value != "" &&
+     document.getElementById('confirm_password').value != "") {
+     alert("Your response is submitted");
+ } else {
+     alert("Please fill all the fields");
+ }
+}
+
+function fun(){
+   document.getElementById("myForm").reset();
+ } 
+
+    var loadFile = function (event) {
+  var image = document.getElementById("output");
+  image.src = URL.createObjectURL(event.target.files[0]);
+};
+ </script>
+</html>

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}VIEW ALL{% endblock %}
+{% block body %}
+    {% for data in values %}
+        <p> IndecScholarship Name: {{data.name}}, Email: {{data.email}}</p>
+    
+    {% endfor %}
+
+    
+    
+    {% endfor%}
+    
+{% endblock %}
